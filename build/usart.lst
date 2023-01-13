@@ -1,0 +1,869 @@
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"usart.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Drivers/SYSTEM/usart/usart.c"
+  18              		.section	.text._write,"ax",%progbits
+  19              		.align	1
+  20              		.p2align 2,,3
+  21              		.weak	_write
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	_write:
+  27              	.LVL0:
+  28              	.LFB68:
+   1:Drivers/SYSTEM/usart/usart.c **** 
+   2:Drivers/SYSTEM/usart/usart.c **** 
+   3:Drivers/SYSTEM/usart/usart.c **** #include "./SYSTEM/usart/usart.h"
+   4:Drivers/SYSTEM/usart/usart.c **** #include "./SYSTEM/sys/sys.h"
+   5:Drivers/SYSTEM/usart/usart.c **** 
+   6:Drivers/SYSTEM/usart/usart.c **** /* Èç¹ûÊ¹ÓÃos,Ôò°üÀ¨ÏÂÃæµÄÍ·ÎÄ¼þ¼´¿É. */
+   7:Drivers/SYSTEM/usart/usart.c **** #if SYS_SUPPORT_OS
+   8:Drivers/SYSTEM/usart/usart.c **** #include "includes.h" /* os Ê¹ÓÃ */
+   9:Drivers/SYSTEM/usart/usart.c **** #endif
+  10:Drivers/SYSTEM/usart/usart.c **** 
+  11:Drivers/SYSTEM/usart/usart.c **** /******************************************************************************************/
+  12:Drivers/SYSTEM/usart/usart.c **** /* ¼ÓÈëÒÔÏÂ´úÂë, Ö§³Öprintfº¯Êý, ¶ø²»ÐèÒªÑ¡Ôñuse MicroLIB */
+  13:Drivers/SYSTEM/usart/usart.c **** 
+  14:Drivers/SYSTEM/usart/usart.c **** #if 0
+  15:Drivers/SYSTEM/usart/usart.c **** 
+  16:Drivers/SYSTEM/usart/usart.c **** #if (__ARMCC_VERSION >= 6010050) /* Ê¹ÓÃAC6±àÒëÆ÷Ê± */
+  17:Drivers/SYSTEM/usart/usart.c **** __asm(".global __use_no_semihosting\n\t");  /* ÉùÃ÷²»Ê¹ÓÃ°ëÖ÷»úÄ£Ê½ */
+  18:Drivers/SYSTEM/usart/usart.c **** __asm(".global __ARM_use_no_argv \n\t");    /* AC6ÏÂÐèÒªÉùÃ÷mainº¯ÊýÎªÎÞ²ÎÊý¸ñÊ½£¬·ñÔò²¿·ÖÀý³Ì¿ÉÄÜ³
+  19:Drivers/SYSTEM/usart/usart.c **** 
+  20:Drivers/SYSTEM/usart/usart.c **** #else
+  21:Drivers/SYSTEM/usart/usart.c **** /* Ê¹ÓÃAC5±àÒëÆ÷Ê±, ÒªÔÚÕâÀï¶¨Òå__FILE ºÍ ²»Ê¹ÓÃ°ëÖ÷»úÄ£Ê½ */
+  22:Drivers/SYSTEM/usart/usart.c **** #pragma import(__use_no_semihosting)
+  23:Drivers/SYSTEM/usart/usart.c **** 
+  24:Drivers/SYSTEM/usart/usart.c **** struct __FILE
+  25:Drivers/SYSTEM/usart/usart.c **** {
+  26:Drivers/SYSTEM/usart/usart.c ****     int handle;
+  27:Drivers/SYSTEM/usart/usart.c ****     /* Whatever you require here. If the only file you are using is */
+  28:Drivers/SYSTEM/usart/usart.c ****     /* standard output using printf() for debugging, no file handling */
+  29:Drivers/SYSTEM/usart/usart.c ****     /* is required. */
+  30:Drivers/SYSTEM/usart/usart.c **** };
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 2
+
+
+  31:Drivers/SYSTEM/usart/usart.c **** 
+  32:Drivers/SYSTEM/usart/usart.c **** #endif
+  33:Drivers/SYSTEM/usart/usart.c **** 
+  34:Drivers/SYSTEM/usart/usart.c **** /* ²»Ê¹ÓÃ°ëÖ÷»úÄ£Ê½£¬ÖÁÉÙÐèÒªÖØ¶¨Òå_ttywrch\_sys_exit\_sys_command_stringº¯Êý,ÒÔÍ¬Ê±¼æÈÝAC6ºÍAC5Ä£Ê
+  35:Drivers/SYSTEM/usart/usart.c **** int _ttywrch(int ch)
+  36:Drivers/SYSTEM/usart/usart.c **** {
+  37:Drivers/SYSTEM/usart/usart.c ****     ch = ch;
+  38:Drivers/SYSTEM/usart/usart.c ****     return ch;
+  39:Drivers/SYSTEM/usart/usart.c **** }
+  40:Drivers/SYSTEM/usart/usart.c **** 
+  41:Drivers/SYSTEM/usart/usart.c **** /* ¶¨Òå_sys_exit()ÒÔ±ÜÃâÊ¹ÓÃ°ëÖ÷»úÄ£Ê½ */
+  42:Drivers/SYSTEM/usart/usart.c **** void _sys_exit(int x)
+  43:Drivers/SYSTEM/usart/usart.c **** {
+  44:Drivers/SYSTEM/usart/usart.c ****     x = x;
+  45:Drivers/SYSTEM/usart/usart.c **** }
+  46:Drivers/SYSTEM/usart/usart.c **** 
+  47:Drivers/SYSTEM/usart/usart.c **** char *_sys_command_string(char *cmd, int len)
+  48:Drivers/SYSTEM/usart/usart.c **** {
+  49:Drivers/SYSTEM/usart/usart.c ****     return NULL;
+  50:Drivers/SYSTEM/usart/usart.c **** }
+  51:Drivers/SYSTEM/usart/usart.c **** 
+  52:Drivers/SYSTEM/usart/usart.c **** 
+  53:Drivers/SYSTEM/usart/usart.c **** /* FILE ÔÚ stdio.hÀïÃæ¶¨Òå. */
+  54:Drivers/SYSTEM/usart/usart.c **** FILE __stdout;
+  55:Drivers/SYSTEM/usart/usart.c **** 
+  56:Drivers/SYSTEM/usart/usart.c **** /* MDKÏÂÐèÒªÖØ¶¨Òåfputcº¯Êý, printfº¯Êý×îÖÕ»áÍ¨¹ýµ÷ÓÃfputcÊä³ö×Ö·û´®µ½´®¿Ú */
+  57:Drivers/SYSTEM/usart/usart.c **** int fputc(int ch, FILE *f)
+  58:Drivers/SYSTEM/usart/usart.c **** {
+  59:Drivers/SYSTEM/usart/usart.c ****     while ((USART_UX->SR & 0X40) == 0);     /* µÈ´ýÉÏÒ»¸ö×Ö·û·¢ËÍÍê³É */
+  60:Drivers/SYSTEM/usart/usart.c **** 
+  61:Drivers/SYSTEM/usart/usart.c ****     USART_UX->DR = (uint8_t)ch;             /* ½«Òª·¢ËÍµÄ×Ö·û ch Ð´Èëµ½DR¼Ä´æÆ÷ */
+  62:Drivers/SYSTEM/usart/usart.c ****     return ch;
+  63:Drivers/SYSTEM/usart/usart.c **** }
+  64:Drivers/SYSTEM/usart/usart.c **** #endif
+  65:Drivers/SYSTEM/usart/usart.c **** /******************************************************************************************/
+  66:Drivers/SYSTEM/usart/usart.c **** #if 1
+  67:Drivers/SYSTEM/usart/usart.c **** __attribute__((weak)) int _write(int file, char* ptr, int len)
+  68:Drivers/SYSTEM/usart/usart.c **** {
+  29              		.loc 1 68 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  69:Drivers/SYSTEM/usart/usart.c ****     int DataIdx;
+  34              		.loc 1 69 5 view .LVU1
+  70:Drivers/SYSTEM/usart/usart.c ****     for (DataIdx = 0; DataIdx < len; DataIdx++) {
+  35              		.loc 1 70 5 view .LVU2
+  36              		.loc 1 70 31 view .LVU3
+  37 0000 101E     		subs	r0, r2, #0
+  38              	.LVL1:
+  39              		.loc 1 70 31 is_stmt 0 view .LVU4
+  40 0002 0ADD     		ble	.L2
+  71:Drivers/SYSTEM/usart/usart.c ****         while ((USART_UX->SR & 0X40) == 0)
+  41              		.loc 1 71 25 view .LVU5
+  42 0004 054A     		ldr	r2, .L9
+  43              	.LVL2:
+  44              		.loc 1 71 25 view .LVU6
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 3
+
+
+  45 0006 01EB000C 		add	ip, r1, r0
+  46              	.L3:
+  47              		.loc 1 71 38 is_stmt 1 discriminator 1 view .LVU7
+  48              		.loc 1 71 25 is_stmt 0 discriminator 1 view .LVU8
+  49 000a 1368     		ldr	r3, [r2]
+  50              		.loc 1 71 38 discriminator 1 view .LVU9
+  51 000c 5B06     		lsls	r3, r3, #25
+  52 000e FCD5     		bpl	.L3
+  72:Drivers/SYSTEM/usart/usart.c ****             ; //µÈ´ý·¢ËÍÍê±Ï
+  73:Drivers/SYSTEM/usart/usart.c ****         USART_UX->DR = (uint8_t)*ptr++;
+  53              		.loc 1 73 9 is_stmt 1 discriminator 2 view .LVU10
+  54              	.LVL3:
+  55              		.loc 1 73 24 is_stmt 0 discriminator 2 view .LVU11
+  56 0010 11F8013B 		ldrb	r3, [r1], #1	@ zero_extendqisi2
+  57              	.LVL4:
+  70:Drivers/SYSTEM/usart/usart.c ****         while ((USART_UX->SR & 0X40) == 0)
+  58              		.loc 1 70 31 discriminator 2 view .LVU12
+  59 0014 8C45     		cmp	ip, r1
+  60              		.loc 1 73 22 discriminator 2 view .LVU13
+  61 0016 5360     		str	r3, [r2, #4]
+  70:Drivers/SYSTEM/usart/usart.c ****         while ((USART_UX->SR & 0X40) == 0)
+  62              		.loc 1 70 45 is_stmt 1 discriminator 2 view .LVU14
+  70:Drivers/SYSTEM/usart/usart.c ****         while ((USART_UX->SR & 0X40) == 0)
+  63              		.loc 1 70 31 discriminator 2 view .LVU15
+  64 0018 F7D1     		bne	.L3
+  65              	.L2:
+  74:Drivers/SYSTEM/usart/usart.c ****     }
+  75:Drivers/SYSTEM/usart/usart.c ****     return len;
+  66              		.loc 1 75 5 view .LVU16
+  76:Drivers/SYSTEM/usart/usart.c **** }
+  67              		.loc 1 76 1 is_stmt 0 view .LVU17
+  68 001a 7047     		bx	lr
+  69              	.L10:
+  70              		.align	2
+  71              	.L9:
+  72 001c 00380140 		.word	1073821696
+  73              		.cfi_endproc
+  74              	.LFE68:
+  76              		.section	.text.usart_init,"ax",%progbits
+  77              		.align	1
+  78              		.p2align 2,,3
+  79              		.global	usart_init
+  80              		.syntax unified
+  81              		.thumb
+  82              		.thumb_func
+  84              	usart_init:
+  85              	.LVL5:
+  86              	.LFB69:
+  77:Drivers/SYSTEM/usart/usart.c **** 
+  78:Drivers/SYSTEM/usart/usart.c **** #endif
+  79:Drivers/SYSTEM/usart/usart.c **** 
+  80:Drivers/SYSTEM/usart/usart.c **** #if USART_EN_RX /*Èç¹ûÊ¹ÄÜÁË½ÓÊÕ*/
+  81:Drivers/SYSTEM/usart/usart.c **** 
+  82:Drivers/SYSTEM/usart/usart.c **** /* ½ÓÊÕ»º³å, ×î´óUSART_REC_LEN¸ö×Ö½Ú. */
+  83:Drivers/SYSTEM/usart/usart.c **** uint8_t g_usart_rx_buf[USART_REC_LEN];
+  84:Drivers/SYSTEM/usart/usart.c **** 
+  85:Drivers/SYSTEM/usart/usart.c **** /*  ½ÓÊÕ×´Ì¬
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 4
+
+
+  86:Drivers/SYSTEM/usart/usart.c ****  *  bit15£¬      ½ÓÊÕÍê³É±êÖ¾
+  87:Drivers/SYSTEM/usart/usart.c ****  *  bit14£¬      ½ÓÊÕµ½0x0d
+  88:Drivers/SYSTEM/usart/usart.c ****  *  bit13~0£¬    ½ÓÊÕµ½µÄÓÐÐ§×Ö½ÚÊýÄ¿
+  89:Drivers/SYSTEM/usart/usart.c ****  */
+  90:Drivers/SYSTEM/usart/usart.c **** uint16_t g_usart_rx_sta = 0;
+  91:Drivers/SYSTEM/usart/usart.c **** 
+  92:Drivers/SYSTEM/usart/usart.c **** uint8_t g_rx_buffer[RXBUFFERSIZE]; /* HAL¿âÊ¹ÓÃµÄ´®¿Ú½ÓÊÕ»º³å */
+  93:Drivers/SYSTEM/usart/usart.c **** 
+  94:Drivers/SYSTEM/usart/usart.c **** UART_HandleTypeDef g_uart1_handle; /* UART¾ä±ú */
+  95:Drivers/SYSTEM/usart/usart.c **** 
+  96:Drivers/SYSTEM/usart/usart.c **** /**
+  97:Drivers/SYSTEM/usart/usart.c ****  * @brief       ´®¿ÚX³õÊ¼»¯º¯Êý
+  98:Drivers/SYSTEM/usart/usart.c ****  * @param       baudrate: ²¨ÌØÂÊ, ¸ù¾Ý×Ô¼ºÐèÒªÉèÖÃ²¨ÌØÂÊÖµ
+  99:Drivers/SYSTEM/usart/usart.c ****  * @note        ×¢Òâ: ±ØÐëÉèÖÃÕýÈ·µÄÊ±ÖÓÔ´, ·ñÔò´®¿Ú²¨ÌØÂÊ¾Í»áÉèÖÃÒì³£.
+ 100:Drivers/SYSTEM/usart/usart.c ****  *              ÕâÀïµÄUSARTµÄÊ±ÖÓÔ´ÔÚsys_stm32_clock_init()º¯ÊýÖÐÒÑ¾­ÉèÖÃ¹ýÁË.
+ 101:Drivers/SYSTEM/usart/usart.c ****  * @retval      ÎÞ
+ 102:Drivers/SYSTEM/usart/usart.c ****  */
+ 103:Drivers/SYSTEM/usart/usart.c **** void usart_init(uint32_t baudrate)
+ 104:Drivers/SYSTEM/usart/usart.c **** {
+  87              		.loc 1 104 1 is_stmt 1 view -0
+  88              		.cfi_startproc
+  89              		@ args = 0, pretend = 0, frame = 0
+  90              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105:Drivers/SYSTEM/usart/usart.c ****     /*UART ³õÊ¼»¯ÉèÖÃ*/
+ 106:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Instance = USART_UX; /* USART_UX */
+  91              		.loc 1 106 5 view .LVU19
+ 107:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.BaudRate = baudrate; /* ²¨ÌØÂÊ */
+ 108:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.WordLength = UART_WORDLENGTH_8B; /* ×Ö³¤Îª8Î»Êý¾Ý¸ñÊ½ */
+  92              		.loc 1 108 36 is_stmt 0 view .LVU20
+  93 0000 0023     		movs	r3, #0
+ 104:Drivers/SYSTEM/usart/usart.c ****     /*UART ³õÊ¼»¯ÉèÖÃ*/
+  94              		.loc 1 104 1 view .LVU21
+  95 0002 0146     		mov	r1, r0
+ 109:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.StopBits = UART_STOPBITS_1; /* Ò»¸öÍ£Ö¹Î» */
+ 110:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.Parity = UART_PARITY_NONE; /* ÎÞÆæÅ¼Ð£ÑéÎ» */
+ 111:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.HwFlowCtl = UART_HWCONTROL_NONE; /* ÎÞÓ²¼þÁ÷¿Ø */
+ 112:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.Mode = UART_MODE_TX_RX; /* ÊÕ·¢Ä£Ê½ */
+  96              		.loc 1 112 30 view .LVU22
+  97 0004 0C22     		movs	r2, #12
+ 104:Drivers/SYSTEM/usart/usart.c ****     /*UART ³õÊ¼»¯ÉèÖÃ*/
+  98              		.loc 1 104 1 view .LVU23
+  99 0006 10B5     		push	{r4, lr}
+ 100              	.LCFI0:
+ 101              		.cfi_def_cfa_offset 8
+ 102              		.cfi_offset 4, -8
+ 103              		.cfi_offset 14, -4
+ 106:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.BaudRate = baudrate; /* ²¨ÌØÂÊ */
+ 104              		.loc 1 106 29 view .LVU24
+ 105 0008 0948     		ldr	r0, .L13
+ 106              	.LVL6:
+ 106:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.BaudRate = baudrate; /* ²¨ÌØÂÊ */
+ 107              		.loc 1 106 29 view .LVU25
+ 108 000a 0A4C     		ldr	r4, .L13+4
+ 109 000c 2060     		str	r0, [r4]
+ 107:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.WordLength = UART_WORDLENGTH_8B; /* ×Ö³¤Îª8Î»Êý¾Ý¸ñÊ½ */
+ 110              		.loc 1 107 5 is_stmt 1 view .LVU26
+ 113:Drivers/SYSTEM/usart/usart.c ****     HAL_UART_Init(&g_uart1_handle); /* HAL_UART_Init()»áÊ¹ÄÜUART1 */
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 5
+
+
+ 111              		.loc 1 113 5 is_stmt 0 view .LVU27
+ 112 000e 2046     		mov	r0, r4
+ 107:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.WordLength = UART_WORDLENGTH_8B; /* ×Ö³¤Îª8Î»Êý¾Ý¸ñÊ½ */
+ 113              		.loc 1 107 34 view .LVU28
+ 114 0010 C4E90113 		strd	r1, r3, [r4, #4]
+ 108:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.StopBits = UART_STOPBITS_1; /* Ò»¸öÍ£Ö¹Î» */
+ 115              		.loc 1 108 5 is_stmt 1 view .LVU29
+ 109:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.Parity = UART_PARITY_NONE; /* ÎÞÆæÅ¼Ð£ÑéÎ» */
+ 116              		.loc 1 109 5 view .LVU30
+ 112:Drivers/SYSTEM/usart/usart.c ****     HAL_UART_Init(&g_uart1_handle); /* HAL_UART_Init()»áÊ¹ÄÜUART1 */
+ 117              		.loc 1 112 30 is_stmt 0 view .LVU31
+ 118 0014 C4E90523 		strd	r2, r3, [r4, #20]
+ 110:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.HwFlowCtl = UART_HWCONTROL_NONE; /* ÎÞÓ²¼þÁ÷¿Ø */
+ 119              		.loc 1 110 32 view .LVU32
+ 120 0018 C4E90333 		strd	r3, r3, [r4, #12]
+ 111:Drivers/SYSTEM/usart/usart.c ****     g_uart1_handle.Init.Mode = UART_MODE_TX_RX; /* ÊÕ·¢Ä£Ê½ */
+ 121              		.loc 1 111 5 is_stmt 1 view .LVU33
+ 122              		.loc 1 113 5 view .LVU34
+ 123 001c FFF7FEFF 		bl	HAL_UART_Init
+ 124              	.LVL7:
+ 114:Drivers/SYSTEM/usart/usart.c **** 
+ 115:Drivers/SYSTEM/usart/usart.c ****     /* ¸Ãº¯Êý»á¿ªÆô½ÓÊÕÖÐ¶Ï£º±êÖ¾Î»UART_IT_RXNE£¬²¢ÇÒÉèÖÃ½ÓÊÕ»º³åÒÔ¼°½ÓÊÕ»º³å½ÓÊÕ×î´óÊý¾ÝÁ¿ */
+ 116:Drivers/SYSTEM/usart/usart.c ****     HAL_UART_Receive_IT(&g_uart1_handle, (uint8_t*)g_rx_buffer, RXBUFFERSIZE);
+ 125              		.loc 1 116 5 view .LVU35
+ 126 0020 2046     		mov	r0, r4
+ 117:Drivers/SYSTEM/usart/usart.c **** }
+ 127              		.loc 1 117 1 is_stmt 0 view .LVU36
+ 128 0022 BDE81040 		pop	{r4, lr}
+ 129              	.LCFI1:
+ 130              		.cfi_restore 14
+ 131              		.cfi_restore 4
+ 132              		.cfi_def_cfa_offset 0
+ 116:Drivers/SYSTEM/usart/usart.c **** }
+ 133              		.loc 1 116 5 view .LVU37
+ 134 0026 0122     		movs	r2, #1
+ 135 0028 0349     		ldr	r1, .L13+8
+ 136 002a FFF7FEBF 		b	HAL_UART_Receive_IT
+ 137              	.LVL8:
+ 138              	.L14:
+ 139 002e 00BF     		.align	2
+ 140              	.L13:
+ 141 0030 00380140 		.word	1073821696
+ 142 0034 00000000 		.word	g_uart1_handle
+ 143 0038 00000000 		.word	g_rx_buffer
+ 144              		.cfi_endproc
+ 145              	.LFE69:
+ 147              		.section	.text.HAL_UART_MspInit,"ax",%progbits
+ 148              		.align	1
+ 149              		.p2align 2,,3
+ 150              		.global	HAL_UART_MspInit
+ 151              		.syntax unified
+ 152              		.thumb
+ 153              		.thumb_func
+ 155              	HAL_UART_MspInit:
+ 156              	.LVL9:
+ 157              	.LFB70:
+ 118:Drivers/SYSTEM/usart/usart.c **** 
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 6
+
+
+ 119:Drivers/SYSTEM/usart/usart.c **** /**
+ 120:Drivers/SYSTEM/usart/usart.c ****  * @brief       UARTµ×²ã³õÊ¼»¯º¯Êý
+ 121:Drivers/SYSTEM/usart/usart.c ****  * @param       huart: UART¾ä±úÀàÐÍÖ¸Õë
+ 122:Drivers/SYSTEM/usart/usart.c ****  * @note        ´Ëº¯Êý»á±»HAL_UART_Init()µ÷ÓÃ
+ 123:Drivers/SYSTEM/usart/usart.c ****  *              Íê³ÉÊ±ÖÓÊ¹ÄÜ£¬Òý½ÅÅäÖÃ£¬ÖÐ¶ÏÅäÖÃ
+ 124:Drivers/SYSTEM/usart/usart.c ****  * @retval      ÎÞ
+ 125:Drivers/SYSTEM/usart/usart.c ****  */
+ 126:Drivers/SYSTEM/usart/usart.c **** void HAL_UART_MspInit(UART_HandleTypeDef* huart)
+ 127:Drivers/SYSTEM/usart/usart.c **** {
+ 158              		.loc 1 127 1 is_stmt 1 view -0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 32
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128:Drivers/SYSTEM/usart/usart.c ****     GPIO_InitTypeDef gpio_init_struct;
+ 162              		.loc 1 128 5 view .LVU39
+ 129:Drivers/SYSTEM/usart/usart.c **** 
+ 130:Drivers/SYSTEM/usart/usart.c ****     if (huart->Instance == USART_UX) /* Èç¹ûÊÇ´®¿Ú1£¬½øÐÐ´®¿Ú1 MSP³õÊ¼»¯ */
+ 163              		.loc 1 130 5 view .LVU40
+ 164              		.loc 1 130 8 is_stmt 0 view .LVU41
+ 165 0000 214B     		ldr	r3, .L22
+ 166 0002 0268     		ldr	r2, [r0]
+ 167 0004 9A42     		cmp	r2, r3
+ 168 0006 00D0     		beq	.L21
+ 169 0008 7047     		bx	lr
+ 170              	.L21:
+ 131:Drivers/SYSTEM/usart/usart.c ****     {
+ 132:Drivers/SYSTEM/usart/usart.c ****         USART_TX_GPIO_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚTX½ÅÊ±ÖÓ */
+ 171              		.loc 1 132 9 is_stmt 1 view .LVU42
+ 172              		.loc 1 132 9 view .LVU43
+ 173              	.LBB2:
+ 174              		.loc 1 132 9 view .LVU44
+ 175              		.loc 1 132 9 view .LVU45
+ 176              	.LBE2:
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_RX_GPIO_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚRX½ÅÊ±ÖÓ */
+ 134:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 135:Drivers/SYSTEM/usart/usart.c **** 
+ 136:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Pin = USART_TX_GPIO_PIN; /* ´®¿Ú·¢ËÍÒý½ÅºÅ */
+ 137:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Mode = GPIO_MODE_AF_PP; /* ¸´ÓÃÍÆÍìÊä³ö */
+ 177              		.loc 1 137 31 is_stmt 0 view .LVU46
+ 178 000a 0220     		movs	r0, #2
+ 179              	.LVL10:
+ 127:Drivers/SYSTEM/usart/usart.c ****     GPIO_InitTypeDef gpio_init_struct;
+ 180              		.loc 1 127 1 view .LVU47
+ 181 000c 70B5     		push	{r4, r5, r6, lr}
+ 182              	.LCFI2:
+ 183              		.cfi_def_cfa_offset 16
+ 184              		.cfi_offset 4, -16
+ 185              		.cfi_offset 5, -12
+ 186              		.cfi_offset 6, -8
+ 187              		.cfi_offset 14, -4
+ 138:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Pull = GPIO_PULLUP; /* ÉÏÀ­ */
+ 139:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH; /* IOËÙ¶ÈÉèÖÃÎª¸ßËÙ */
+ 188              		.loc 1 139 32 view .LVU48
+ 189 000e 0324     		movs	r4, #3
+ 136:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Mode = GPIO_MODE_AF_PP; /* ¸´ÓÃÍÆÍìÊä³ö */
+ 190              		.loc 1 136 30 view .LVU49
+ 191 0010 4FF40076 		mov	r6, #512
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 7
+
+
+ 138:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Pull = GPIO_PULLUP; /* ÉÏÀ­ */
+ 192              		.loc 1 138 31 view .LVU50
+ 193 0014 0125     		movs	r5, #1
+ 194              	.LBB3:
+ 132:Drivers/SYSTEM/usart/usart.c ****         USART_RX_GPIO_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚRX½ÅÊ±ÖÓ */
+ 195              		.loc 1 132 9 view .LVU51
+ 196 0016 03F55843 		add	r3, r3, #55296
+ 197 001a 9A69     		ldr	r2, [r3, #24]
+ 198              	.LBE3:
+ 127:Drivers/SYSTEM/usart/usart.c ****     GPIO_InitTypeDef gpio_init_struct;
+ 199              		.loc 1 127 1 view .LVU52
+ 200 001c 88B0     		sub	sp, sp, #32
+ 201              	.LCFI3:
+ 202              		.cfi_def_cfa_offset 48
+ 203              	.LBB4:
+ 132:Drivers/SYSTEM/usart/usart.c ****         USART_RX_GPIO_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚRX½ÅÊ±ÖÓ */
+ 204              		.loc 1 132 9 view .LVU53
+ 205 001e 42F00402 		orr	r2, r2, #4
+ 206 0022 9A61     		str	r2, [r3, #24]
+ 132:Drivers/SYSTEM/usart/usart.c ****         USART_RX_GPIO_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚRX½ÅÊ±ÖÓ */
+ 207              		.loc 1 132 9 is_stmt 1 view .LVU54
+ 208 0024 9A69     		ldr	r2, [r3, #24]
+ 209 0026 02F00402 		and	r2, r2, #4
+ 210 002a 0192     		str	r2, [sp, #4]
+ 132:Drivers/SYSTEM/usart/usart.c ****         USART_RX_GPIO_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚRX½ÅÊ±ÖÓ */
+ 211              		.loc 1 132 9 view .LVU55
+ 212 002c 019A     		ldr	r2, [sp, #4]
+ 213              	.LBE4:
+ 132:Drivers/SYSTEM/usart/usart.c ****         USART_RX_GPIO_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚRX½ÅÊ±ÖÓ */
+ 214              		.loc 1 132 9 view .LVU56
+ 132:Drivers/SYSTEM/usart/usart.c ****         USART_RX_GPIO_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚRX½ÅÊ±ÖÓ */
+ 215              		.loc 1 132 9 view .LVU57
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 216              		.loc 1 133 9 view .LVU58
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 217              		.loc 1 133 9 view .LVU59
+ 218              	.LBB5:
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 219              		.loc 1 133 9 view .LVU60
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 220              		.loc 1 133 9 view .LVU61
+ 221 002e 9969     		ldr	r1, [r3, #24]
+ 222 0030 41F00401 		orr	r1, r1, #4
+ 223 0034 9961     		str	r1, [r3, #24]
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 224              		.loc 1 133 9 view .LVU62
+ 225 0036 9969     		ldr	r1, [r3, #24]
+ 226 0038 01F00401 		and	r1, r1, #4
+ 227 003c 0291     		str	r1, [sp, #8]
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 228              		.loc 1 133 9 view .LVU63
+ 229 003e 029A     		ldr	r2, [sp, #8]
+ 230              	.LBE5:
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 231              		.loc 1 133 9 view .LVU64
+ 133:Drivers/SYSTEM/usart/usart.c ****         USART_UX_CLK_ENABLE(); /* Ê¹ÄÜ´®¿ÚÊ±ÖÓ */
+ 232              		.loc 1 133 9 view .LVU65
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 8
+
+
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 233              		.loc 1 134 9 view .LVU66
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 234              		.loc 1 134 9 view .LVU67
+ 235              	.LBB6:
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 236              		.loc 1 134 9 view .LVU68
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 237              		.loc 1 134 9 view .LVU69
+ 238 0040 9969     		ldr	r1, [r3, #24]
+ 239 0042 41F48041 		orr	r1, r1, #16384
+ 240 0046 9961     		str	r1, [r3, #24]
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 241              		.loc 1 134 9 view .LVU70
+ 242 0048 9B69     		ldr	r3, [r3, #24]
+ 243              	.LBE6:
+ 140:Drivers/SYSTEM/usart/usart.c ****         HAL_GPIO_Init(USART_TX_GPIO_PORT, &gpio_init_struct);
+ 244              		.loc 1 140 9 is_stmt 0 view .LVU71
+ 245 004a 04A9     		add	r1, sp, #16
+ 246              	.LBB7:
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 247              		.loc 1 134 9 view .LVU72
+ 248 004c 03F48043 		and	r3, r3, #16384
+ 249 0050 0393     		str	r3, [sp, #12]
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 250              		.loc 1 134 9 is_stmt 1 view .LVU73
+ 251              	.LBE7:
+ 137:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Pull = GPIO_PULLUP; /* ÉÏÀ­ */
+ 252              		.loc 1 137 31 is_stmt 0 view .LVU74
+ 253 0052 0590     		str	r0, [sp, #20]
+ 254              		.loc 1 140 9 view .LVU75
+ 255 0054 0D48     		ldr	r0, .L22+4
+ 256              	.LBB8:
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 257              		.loc 1 134 9 view .LVU76
+ 258 0056 039B     		ldr	r3, [sp, #12]
+ 259              	.LBE8:
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 260              		.loc 1 134 9 is_stmt 1 view .LVU77
+ 134:Drivers/SYSTEM/usart/usart.c **** 
+ 261              		.loc 1 134 9 view .LVU78
+ 136:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Mode = GPIO_MODE_AF_PP; /* ¸´ÓÃÍÆÍìÊä³ö */
+ 262              		.loc 1 136 9 view .LVU79
+ 137:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Pull = GPIO_PULLUP; /* ÉÏÀ­ */
+ 263              		.loc 1 137 9 view .LVU80
+ 138:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Speed = GPIO_SPEED_FREQ_HIGH; /* IOËÙ¶ÈÉèÖÃÎª¸ßËÙ */
+ 264              		.loc 1 138 9 view .LVU81
+ 139:Drivers/SYSTEM/usart/usart.c ****         HAL_GPIO_Init(USART_TX_GPIO_PORT, &gpio_init_struct);
+ 265              		.loc 1 139 32 is_stmt 0 view .LVU82
+ 266 0058 CDE90654 		strd	r5, r4, [sp, #24]
+ 267              		.loc 1 140 9 is_stmt 1 view .LVU83
+ 136:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Mode = GPIO_MODE_AF_PP; /* ¸´ÓÃÍÆÍìÊä³ö */
+ 268              		.loc 1 136 30 is_stmt 0 view .LVU84
+ 269 005c 0496     		str	r6, [sp, #16]
+ 270              		.loc 1 140 9 view .LVU85
+ 271 005e FFF7FEFF 		bl	HAL_GPIO_Init
+ 272              	.LVL11:
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 9
+
+
+ 141:Drivers/SYSTEM/usart/usart.c **** 
+ 142:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Pin = USART_RX_GPIO_PIN; /* ´®¿ÚRX½Å Ä£Ê½ÉèÖÃ */
+ 273              		.loc 1 142 9 is_stmt 1 view .LVU86
+ 143:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Mode = GPIO_MODE_AF_INPUT;
+ 274              		.loc 1 143 9 view .LVU87
+ 142:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Mode = GPIO_MODE_AF_INPUT;
+ 275              		.loc 1 142 30 is_stmt 0 view .LVU88
+ 276 0062 0023     		movs	r3, #0
+ 277 0064 4FF48062 		mov	r2, #1024
+ 144:Drivers/SYSTEM/usart/usart.c ****         HAL_GPIO_Init(USART_RX_GPIO_PORT, &gpio_init_struct); /* ´®¿ÚRX½Å ±ØÐëÉèÖÃ³ÉÊäÈëÄ£Ê½ */
+ 278              		.loc 1 144 9 view .LVU89
+ 279 0068 04A9     		add	r1, sp, #16
+ 280 006a 0848     		ldr	r0, .L22+4
+ 142:Drivers/SYSTEM/usart/usart.c ****         gpio_init_struct.Mode = GPIO_MODE_AF_INPUT;
+ 281              		.loc 1 142 30 view .LVU90
+ 282 006c CDE90423 		strd	r2, [sp, #16]
+ 283              		.loc 1 144 9 is_stmt 1 view .LVU91
+ 284 0070 FFF7FEFF 		bl	HAL_GPIO_Init
+ 285              	.LVL12:
+ 145:Drivers/SYSTEM/usart/usart.c **** 
+ 146:Drivers/SYSTEM/usart/usart.c **** #if USART_EN_RX
+ 147:Drivers/SYSTEM/usart/usart.c ****         HAL_NVIC_EnableIRQ(USART_UX_IRQn); /* Ê¹ÄÜUSART1ÖÐ¶ÏÍ¨µÀ */
+ 286              		.loc 1 147 9 view .LVU92
+ 287 0074 2520     		movs	r0, #37
+ 288 0076 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 289              	.LVL13:
+ 148:Drivers/SYSTEM/usart/usart.c ****         HAL_NVIC_SetPriority(USART_UX_IRQn, 3, 3); /* ×é2£¬×îµÍÓÅÏÈ¼¶:ÇÀÕ¼ÓÅÏÈ¼¶3£¬×ÓÓÅÏÈ¼¶3 */
+ 290              		.loc 1 148 9 view .LVU93
+ 291 007a 2246     		mov	r2, r4
+ 292 007c 2146     		mov	r1, r4
+ 293 007e 2520     		movs	r0, #37
+ 294 0080 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 295              	.LVL14:
+ 149:Drivers/SYSTEM/usart/usart.c **** #endif
+ 150:Drivers/SYSTEM/usart/usart.c ****     }
+ 151:Drivers/SYSTEM/usart/usart.c **** }
+ 296              		.loc 1 151 1 is_stmt 0 view .LVU94
+ 297 0084 08B0     		add	sp, sp, #32
+ 298              	.LCFI4:
+ 299              		.cfi_def_cfa_offset 16
+ 300              		@ sp needed
+ 301 0086 70BD     		pop	{r4, r5, r6, pc}
+ 302              	.L23:
+ 303              		.align	2
+ 304              	.L22:
+ 305 0088 00380140 		.word	1073821696
+ 306 008c 00080140 		.word	1073809408
+ 307              		.cfi_endproc
+ 308              	.LFE70:
+ 310              		.section	.text.HAL_UART_RxCpltCallback,"ax",%progbits
+ 311              		.align	1
+ 312              		.p2align 2,,3
+ 313              		.global	HAL_UART_RxCpltCallback
+ 314              		.syntax unified
+ 315              		.thumb
+ 316              		.thumb_func
+ 318              	HAL_UART_RxCpltCallback:
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 10
+
+
+ 319              	.LVL15:
+ 320              	.LFB71:
+ 152:Drivers/SYSTEM/usart/usart.c **** 
+ 153:Drivers/SYSTEM/usart/usart.c **** /**
+ 154:Drivers/SYSTEM/usart/usart.c ****  * @brief       ´®¿ÚÊý¾Ý½ÓÊÕ»Øµ÷º¯Êý
+ 155:Drivers/SYSTEM/usart/usart.c ****                 Êý¾Ý´¦ÀíÔÚÕâÀï½øÐÐ
+ 156:Drivers/SYSTEM/usart/usart.c ****  * @param       huart:´®¿Ú¾ä±ú
+ 157:Drivers/SYSTEM/usart/usart.c ****  * @retval      ÎÞ
+ 158:Drivers/SYSTEM/usart/usart.c ****  */
+ 159:Drivers/SYSTEM/usart/usart.c **** void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart)
+ 160:Drivers/SYSTEM/usart/usart.c **** {
+ 321              		.loc 1 160 1 is_stmt 1 view -0
+ 322              		.cfi_startproc
+ 323              		@ args = 0, pretend = 0, frame = 0
+ 324              		@ frame_needed = 0, uses_anonymous_args = 0
+ 325              		@ link register save eliminated.
+ 161:Drivers/SYSTEM/usart/usart.c ****     if (huart->Instance == USART_UX) /* Èç¹ûÊÇ´®¿Ú1 */
+ 326              		.loc 1 161 5 view .LVU96
+ 327              		.loc 1 161 8 is_stmt 0 view .LVU97
+ 328 0000 164B     		ldr	r3, .L38
+ 329 0002 0268     		ldr	r2, [r0]
+ 330 0004 9A42     		cmp	r2, r3
+ 331 0006 00D0     		beq	.L36
+ 332              	.LVL16:
+ 333              	.L33:
+ 334              		.loc 1 161 8 view .LVU98
+ 335 0008 7047     		bx	lr
+ 336              	.LVL17:
+ 337              	.L36:
+ 162:Drivers/SYSTEM/usart/usart.c ****     {
+ 163:Drivers/SYSTEM/usart/usart.c ****         if ((g_usart_rx_sta & 0x8000) == 0) /* ½ÓÊÕÎ´Íê³É */
+ 338              		.loc 1 163 9 is_stmt 1 view .LVU99
+ 339              		.loc 1 163 39 is_stmt 0 view .LVU100
+ 340 000a 154A     		ldr	r2, .L38+4
+ 341              		.loc 1 163 12 view .LVU101
+ 342 000c B2F90010 		ldrsh	r1, [r2]
+ 343              		.loc 1 163 39 view .LVU102
+ 344 0010 1388     		ldrh	r3, [r2]
+ 345              		.loc 1 163 12 view .LVU103
+ 346 0012 0029     		cmp	r1, #0
+ 347 0014 F8DB     		blt	.L33
+ 164:Drivers/SYSTEM/usart/usart.c ****         {
+ 165:Drivers/SYSTEM/usart/usart.c ****             if (g_usart_rx_sta & 0x4000) /* ½ÓÊÕµ½ÁË0x0d£¨¼´»Ø³µ¼ü£© */
+ 348              		.loc 1 165 13 is_stmt 1 view .LVU104
+ 166:Drivers/SYSTEM/usart/usart.c ****             {
+ 167:Drivers/SYSTEM/usart/usart.c ****                 if (g_rx_buffer[0] != 0x0a) /* ½ÓÊÕµ½µÄ²»ÊÇ0x0a£¨¼´²»ÊÇ»»ÐÐ¼ü£© */
+ 349              		.loc 1 167 32 is_stmt 0 view .LVU105
+ 350 0016 1349     		ldr	r1, .L38+8
+ 165:Drivers/SYSTEM/usart/usart.c ****             {
+ 351              		.loc 1 165 16 view .LVU106
+ 352 0018 5804     		lsls	r0, r3, #17
+ 353              	.LVL18:
+ 354              		.loc 1 167 20 view .LVU107
+ 355 001a 0978     		ldrb	r1, [r1]	@ zero_extendqisi2
+ 165:Drivers/SYSTEM/usart/usart.c ****             {
+ 356              		.loc 1 165 16 view .LVU108
+ 357 001c 04D5     		bpl	.L28
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 11
+
+
+ 358              		.loc 1 167 17 is_stmt 1 view .LVU109
+ 359              		.loc 1 167 20 is_stmt 0 view .LVU110
+ 360 001e 0A29     		cmp	r1, #10
+ 361 0020 12D0     		beq	.L29
+ 168:Drivers/SYSTEM/usart/usart.c ****                 {
+ 169:Drivers/SYSTEM/usart/usart.c ****                     g_usart_rx_sta = 0; /* ½ÓÊÕ´íÎó,ÖØÐÂ¿ªÊ¼ */
+ 362              		.loc 1 169 21 is_stmt 1 view .LVU111
+ 363              		.loc 1 169 36 is_stmt 0 view .LVU112
+ 364 0022 0023     		movs	r3, #0
+ 365 0024 1380     		strh	r3, [r2]	@ movhi
+ 366 0026 EFE7     		b	.L33
+ 367              	.L28:
+ 170:Drivers/SYSTEM/usart/usart.c ****                 } else /* ½ÓÊÕµ½µÄÊÇ0x0a£¨¼´»»ÐÐ¼ü£© */
+ 171:Drivers/SYSTEM/usart/usart.c ****                 {
+ 172:Drivers/SYSTEM/usart/usart.c ****                     g_usart_rx_sta |= 0x8000; /* ½ÓÊÕÍê³ÉÁË */
+ 173:Drivers/SYSTEM/usart/usart.c ****                 }
+ 174:Drivers/SYSTEM/usart/usart.c ****             } else /* »¹Ã»ÊÕµ½0X0d£¨¼´»Ø³µ¼ü£© */
+ 175:Drivers/SYSTEM/usart/usart.c ****             {
+ 176:Drivers/SYSTEM/usart/usart.c ****                 if (g_rx_buffer[0] == 0x0d)
+ 368              		.loc 1 176 17 is_stmt 1 view .LVU113
+ 369              		.loc 1 176 20 is_stmt 0 view .LVU114
+ 370 0028 0D29     		cmp	r1, #13
+ 371 002a 13D0     		beq	.L37
+ 177:Drivers/SYSTEM/usart/usart.c ****                     g_usart_rx_sta |= 0x4000;
+ 178:Drivers/SYSTEM/usart/usart.c ****                 else {
+ 179:Drivers/SYSTEM/usart/usart.c ****                     g_usart_rx_buf[g_usart_rx_sta & 0X3FFF] = g_rx_buffer[0];
+ 372              		.loc 1 179 21 is_stmt 1 view .LVU115
+ 373              		.loc 1 179 51 is_stmt 0 view .LVU116
+ 374 002c C3F30D00 		ubfx	r0, r3, #0, #14
+ 180:Drivers/SYSTEM/usart/usart.c ****                     g_usart_rx_sta++;
+ 375              		.loc 1 180 35 view .LVU117
+ 376 0030 0133     		adds	r3, r3, #1
+ 160:Drivers/SYSTEM/usart/usart.c ****     if (huart->Instance == USART_UX) /* Èç¹ûÊÇ´®¿Ú1 */
+ 377              		.loc 1 160 1 view .LVU118
+ 378 0032 10B4     		push	{r4}
+ 379              	.LCFI5:
+ 380              		.cfi_def_cfa_offset 4
+ 381              		.cfi_offset 4, -4
+ 382              		.loc 1 180 35 view .LVU119
+ 383 0034 9BB2     		uxth	r3, r3
+ 179:Drivers/SYSTEM/usart/usart.c ****                     g_usart_rx_sta++;
+ 384              		.loc 1 179 61 view .LVU120
+ 385 0036 0C4C     		ldr	r4, .L38+12
+ 181:Drivers/SYSTEM/usart/usart.c **** 
+ 182:Drivers/SYSTEM/usart/usart.c ****                     if (g_usart_rx_sta > (USART_REC_LEN - 1)) {
+ 386              		.loc 1 182 24 view .LVU121
+ 387 0038 C72B     		cmp	r3, #199
+ 179:Drivers/SYSTEM/usart/usart.c ****                     g_usart_rx_sta++;
+ 388              		.loc 1 179 61 view .LVU122
+ 389 003a 2154     		strb	r1, [r4, r0]
+ 180:Drivers/SYSTEM/usart/usart.c **** 
+ 390              		.loc 1 180 21 is_stmt 1 view .LVU123
+ 180:Drivers/SYSTEM/usart/usart.c **** 
+ 391              		.loc 1 180 35 is_stmt 0 view .LVU124
+ 392 003c 1380     		strh	r3, [r2]	@ movhi
+ 393              		.loc 1 182 21 is_stmt 1 view .LVU125
+ 394              		.loc 1 182 24 is_stmt 0 view .LVU126
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 12
+
+
+ 395 003e 01D9     		bls	.L24
+ 169:Drivers/SYSTEM/usart/usart.c ****                 } else /* ½ÓÊÕµ½µÄÊÇ0x0a£¨¼´»»ÐÐ¼ü£© */
+ 396              		.loc 1 169 21 is_stmt 1 view .LVU127
+ 169:Drivers/SYSTEM/usart/usart.c ****                 } else /* ½ÓÊÕµ½µÄÊÇ0x0a£¨¼´»»ÐÐ¼ü£© */
+ 397              		.loc 1 169 36 is_stmt 0 view .LVU128
+ 398 0040 0023     		movs	r3, #0
+ 399 0042 1380     		strh	r3, [r2]	@ movhi
+ 400              	.L24:
+ 183:Drivers/SYSTEM/usart/usart.c ****                         g_usart_rx_sta = 0; /* ½ÓÊÕÊý¾Ý´íÎó,ÖØÐÂ¿ªÊ¼½ÓÊÕ */
+ 184:Drivers/SYSTEM/usart/usart.c ****                     }
+ 185:Drivers/SYSTEM/usart/usart.c ****                 }
+ 186:Drivers/SYSTEM/usart/usart.c ****             }
+ 187:Drivers/SYSTEM/usart/usart.c ****         }
+ 188:Drivers/SYSTEM/usart/usart.c ****     }
+ 189:Drivers/SYSTEM/usart/usart.c **** }
+ 401              		.loc 1 189 1 view .LVU129
+ 402 0044 10BC     		pop	{r4}
+ 403              	.LCFI6:
+ 404              		.cfi_restore 4
+ 405              		.cfi_def_cfa_offset 0
+ 406 0046 7047     		bx	lr
+ 407              	.L29:
+ 172:Drivers/SYSTEM/usart/usart.c ****                 }
+ 408              		.loc 1 172 21 is_stmt 1 view .LVU130
+ 172:Drivers/SYSTEM/usart/usart.c ****                 }
+ 409              		.loc 1 172 36 is_stmt 0 view .LVU131
+ 410 0048 6FEA4343 		mvn	r3, r3, lsl #17
+ 411 004c 6FEA5343 		mvn	r3, r3, lsr #17
+ 412 0050 1380     		strh	r3, [r2]	@ movhi
+ 413 0052 7047     		bx	lr
+ 414              	.L37:
+ 177:Drivers/SYSTEM/usart/usart.c ****                 else {
+ 415              		.loc 1 177 21 is_stmt 1 view .LVU132
+ 177:Drivers/SYSTEM/usart/usart.c ****                 else {
+ 416              		.loc 1 177 36 is_stmt 0 view .LVU133
+ 417 0054 43F48043 		orr	r3, r3, #16384
+ 418 0058 1380     		strh	r3, [r2]	@ movhi
+ 419 005a 7047     		bx	lr
+ 420              	.L39:
+ 421              		.align	2
+ 422              	.L38:
+ 423 005c 00380140 		.word	1073821696
+ 424 0060 00000000 		.word	g_usart_rx_sta
+ 425 0064 00000000 		.word	g_rx_buffer
+ 426 0068 00000000 		.word	g_usart_rx_buf
+ 427              		.cfi_endproc
+ 428              	.LFE71:
+ 430              		.section	.text.USART1_IRQHandler,"ax",%progbits
+ 431              		.align	1
+ 432              		.p2align 2,,3
+ 433              		.global	USART1_IRQHandler
+ 434              		.syntax unified
+ 435              		.thumb
+ 436              		.thumb_func
+ 438              	USART1_IRQHandler:
+ 439              	.LFB72:
+ 190:Drivers/SYSTEM/usart/usart.c **** 
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 13
+
+
+ 191:Drivers/SYSTEM/usart/usart.c **** /**
+ 192:Drivers/SYSTEM/usart/usart.c ****  * @brief       ´®¿ÚXÖÐ¶Ï·þÎñº¯Êý
+ 193:Drivers/SYSTEM/usart/usart.c ****                 ×¢Òâ,¶ÁÈ¡USARTx->SRÄÜ±ÜÃâÄªÃûÆäÃîµÄ´íÎó
+ 194:Drivers/SYSTEM/usart/usart.c ****  * @param       ÎÞ
+ 195:Drivers/SYSTEM/usart/usart.c ****  * @retval      ÎÞ
+ 196:Drivers/SYSTEM/usart/usart.c ****  */
+ 197:Drivers/SYSTEM/usart/usart.c **** void USART_UX_IRQHandler(void)
+ 198:Drivers/SYSTEM/usart/usart.c **** {
+ 440              		.loc 1 198 1 is_stmt 1 view -0
+ 441              		.cfi_startproc
+ 442              		@ args = 0, pretend = 0, frame = 0
+ 443              		@ frame_needed = 0, uses_anonymous_args = 0
+ 199:Drivers/SYSTEM/usart/usart.c **** #if SYS_SUPPORT_OS /* Ê¹ÓÃOS */
+ 200:Drivers/SYSTEM/usart/usart.c ****     OSIntEnter();
+ 201:Drivers/SYSTEM/usart/usart.c **** #endif
+ 202:Drivers/SYSTEM/usart/usart.c ****     HAL_UART_IRQHandler(&g_uart1_handle); /* µ÷ÓÃHAL¿âÖÐ¶Ï´¦Àí¹«ÓÃº¯Êý */
+ 444              		.loc 1 202 5 view .LVU135
+ 198:Drivers/SYSTEM/usart/usart.c **** #if SYS_SUPPORT_OS /* Ê¹ÓÃOS */
+ 445              		.loc 1 198 1 is_stmt 0 view .LVU136
+ 446 0000 38B5     		push	{r3, r4, r5, lr}
+ 447              	.LCFI7:
+ 448              		.cfi_def_cfa_offset 16
+ 449              		.cfi_offset 3, -16
+ 450              		.cfi_offset 4, -12
+ 451              		.cfi_offset 5, -8
+ 452              		.cfi_offset 14, -4
+ 453              		.loc 1 202 5 view .LVU137
+ 454 0002 0648     		ldr	r0, .L44
+ 455 0004 FFF7FEFF 		bl	HAL_UART_IRQHandler
+ 456              	.LVL19:
+ 203:Drivers/SYSTEM/usart/usart.c **** 
+ 204:Drivers/SYSTEM/usart/usart.c ****     while (HAL_UART_Receive_IT(&g_uart1_handle, (uint8_t*)g_rx_buffer, RXBUFFERSIZE) != HAL_OK) /* 
+ 457              		.loc 1 204 5 is_stmt 1 view .LVU138
+ 458              		.loc 1 204 12 is_stmt 0 view .LVU139
+ 459 0008 054D     		ldr	r5, .L44+4
+ 460 000a 044C     		ldr	r4, .L44
+ 461              	.L41:
+ 205:Drivers/SYSTEM/usart/usart.c ****     {
+ 206:Drivers/SYSTEM/usart/usart.c ****         /* Èç¹û³ö´í»á¿¨ËÀÔÚÕâÀï */
+ 207:Drivers/SYSTEM/usart/usart.c ****     }
+ 462              		.loc 1 207 5 is_stmt 1 discriminator 1 view .LVU140
+ 204:Drivers/SYSTEM/usart/usart.c ****     {
+ 463              		.loc 1 204 86 discriminator 1 view .LVU141
+ 204:Drivers/SYSTEM/usart/usart.c ****     {
+ 464              		.loc 1 204 12 is_stmt 0 discriminator 1 view .LVU142
+ 465 000c 0122     		movs	r2, #1
+ 466 000e 2946     		mov	r1, r5
+ 467 0010 2046     		mov	r0, r4
+ 468 0012 FFF7FEFF 		bl	HAL_UART_Receive_IT
+ 469              	.LVL20:
+ 204:Drivers/SYSTEM/usart/usart.c ****     {
+ 470              		.loc 1 204 86 discriminator 1 view .LVU143
+ 471 0016 0028     		cmp	r0, #0
+ 472 0018 F8D1     		bne	.L41
+ 208:Drivers/SYSTEM/usart/usart.c **** 
+ 209:Drivers/SYSTEM/usart/usart.c **** #if SYS_SUPPORT_OS /* Ê¹ÓÃOS */
+ 210:Drivers/SYSTEM/usart/usart.c ****     OSIntExit();
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 14
+
+
+ 211:Drivers/SYSTEM/usart/usart.c **** #endif
+ 212:Drivers/SYSTEM/usart/usart.c **** }
+ 473              		.loc 1 212 1 view .LVU144
+ 474 001a 38BD     		pop	{r3, r4, r5, pc}
+ 475              	.L45:
+ 476              		.align	2
+ 477              	.L44:
+ 478 001c 00000000 		.word	g_uart1_handle
+ 479 0020 00000000 		.word	g_rx_buffer
+ 480              		.cfi_endproc
+ 481              	.LFE72:
+ 483              		.global	g_uart1_handle
+ 484              		.section	.bss.g_uart1_handle,"aw",%nobits
+ 485              		.align	2
+ 488              	g_uart1_handle:
+ 489 0000 00000000 		.space	64
+ 489      00000000 
+ 489      00000000 
+ 489      00000000 
+ 489      00000000 
+ 490              		.global	g_rx_buffer
+ 491              		.section	.bss.g_rx_buffer,"aw",%nobits
+ 492              		.align	2
+ 495              	g_rx_buffer:
+ 496 0000 00       		.space	1
+ 497              		.global	g_usart_rx_sta
+ 498              		.section	.bss.g_usart_rx_sta,"aw",%nobits
+ 499              		.align	1
+ 502              	g_usart_rx_sta:
+ 503 0000 0000     		.space	2
+ 504              		.global	g_usart_rx_buf
+ 505              		.section	.bss.g_usart_rx_buf,"aw",%nobits
+ 506              		.align	2
+ 509              	g_usart_rx_buf:
+ 510 0000 00000000 		.space	200
+ 510      00000000 
+ 510      00000000 
+ 510      00000000 
+ 510      00000000 
+ 511              		.text
+ 512              	.Letext0:
+ 513              		.file 2 "d:\\appdev\\vsarm\\armcc\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 514              		.file 3 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 515              		.file 4 "d:\\appdev\\vsarm\\armcc\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 516              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 517              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 518              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 519              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 520              		.file 9 "Drivers/./SYSTEM/usart/usart.h"
+ 521              		.file 10 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h"
+ARM GAS  C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 usart.c
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:19     .text._write:00000000 $t
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:26     .text._write:00000000 _write
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:72     .text._write:0000001c $d
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:77     .text.usart_init:00000000 $t
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:84     .text.usart_init:00000000 usart_init
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:141    .text.usart_init:00000030 $d
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:488    .bss.g_uart1_handle:00000000 g_uart1_handle
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:495    .bss.g_rx_buffer:00000000 g_rx_buffer
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:148    .text.HAL_UART_MspInit:00000000 $t
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:155    .text.HAL_UART_MspInit:00000000 HAL_UART_MspInit
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:305    .text.HAL_UART_MspInit:00000088 $d
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:311    .text.HAL_UART_RxCpltCallback:00000000 $t
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:318    .text.HAL_UART_RxCpltCallback:00000000 HAL_UART_RxCpltCallback
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:423    .text.HAL_UART_RxCpltCallback:0000005c $d
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:502    .bss.g_usart_rx_sta:00000000 g_usart_rx_sta
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:509    .bss.g_usart_rx_buf:00000000 g_usart_rx_buf
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:431    .text.USART1_IRQHandler:00000000 $t
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:438    .text.USART1_IRQHandler:00000000 USART1_IRQHandler
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:478    .text.USART1_IRQHandler:0000001c $d
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:485    .bss.g_uart1_handle:00000000 $d
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:492    .bss.g_rx_buffer:00000000 $d
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:499    .bss.g_usart_rx_sta:00000000 $d
+C:\Users\86184\AppData\Local\Temp\cc6h8hCb.s:506    .bss.g_usart_rx_buf:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_UART_Init
+HAL_UART_Receive_IT
+HAL_GPIO_Init
+HAL_NVIC_EnableIRQ
+HAL_NVIC_SetPriority
+HAL_UART_IRQHandler

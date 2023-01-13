@@ -1,0 +1,178 @@
+ARM GAS  C:\Users\86184\AppData\Local\Temp\ccc6TIaj.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"ex7.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Src/ex7.c"
+  18              		.section	.rodata.run.str1.4,"aMS",%progbits,1
+  19              		.align	2
+  20              	.LC0:
+  21 0000 77776467 		.ascii	"wwdg reset\015\000"
+  21      20726573 
+  21      65740D00 
+  22              		.align	2
+  23              	.LC1:
+  24 000c 6F746865 		.ascii	"other reset\015\000"
+  24      72207265 
+  24      7365740D 
+  24      00
+  25              		.section	.text.run,"ax",%progbits
+  26              		.align	1
+  27              		.p2align 2,,3
+  28              		.global	run
+  29              		.syntax unified
+  30              		.thumb
+  31              		.thumb_func
+  33              	run:
+  34              	.LFB68:
+   1:Src/ex7.c     **** #include "ex7.h"
+   2:Src/ex7.c     **** 
+   3:Src/ex7.c     **** 
+   4:Src/ex7.c     **** /* 实验7 窗口看门狗 */
+   5:Src/ex7.c     **** void run()
+   6:Src/ex7.c     **** {
+  35              		.loc 1 6 1 view -0
+  36              		.cfi_startproc
+  37              		@ Volatile: function does not return.
+  38              		@ args = 0, pretend = 0, frame = 0
+  39              		@ frame_needed = 0, uses_anonymous_args = 0
+   7:Src/ex7.c     ****     usart_init(115200);
+  40              		.loc 1 7 5 view .LVU1
+   6:Src/ex7.c     ****     usart_init(115200);
+  41              		.loc 1 6 1 is_stmt 0 view .LVU2
+  42 0000 08B5     		push	{r3, lr}
+  43              	.LCFI0:
+  44              		.cfi_def_cfa_offset 8
+  45              		.cfi_offset 3, -8
+ARM GAS  C:\Users\86184\AppData\Local\Temp\ccc6TIaj.s 			page 2
+
+
+  46              		.cfi_offset 14, -4
+  47              		.loc 1 7 5 view .LVU3
+  48 0002 4FF4E130 		mov	r0, #115200
+  49 0006 FFF7FEFF 		bl	usart_init
+  50              	.LVL0:
+   8:Src/ex7.c     ****     led_init();
+  51              		.loc 1 8 5 is_stmt 1 view .LVU4
+  52 000a FFF7FEFF 		bl	led_init
+  53              	.LVL1:
+   9:Src/ex7.c     ****     if (__HAL_RCC_GET_FLAG(RCC_FLAG_WWDGRST) != RESET) {
+  54              		.loc 1 9 5 view .LVU5
+  55              		.loc 1 9 9 is_stmt 0 view .LVU6
+  56 000e 114B     		ldr	r3, .L7
+  57 0010 5B6A     		ldr	r3, [r3, #36]
+  58              		.loc 1 9 8 view .LVU7
+  59 0012 5B00     		lsls	r3, r3, #1
+  60 0014 19D5     		bpl	.L2
+  10:Src/ex7.c     ****         printf("wwdg reset\r\n");
+  61              		.loc 1 10 9 is_stmt 1 view .LVU8
+  62 0016 1048     		ldr	r0, .L7+4
+  63 0018 FFF7FEFF 		bl	puts
+  64              	.LVL2:
+  11:Src/ex7.c     ****         __HAL_RCC_CLEAR_RESET_FLAGS();
+  65              		.loc 1 11 9 view .LVU9
+  66 001c 0122     		movs	r2, #1
+  67 001e 0F4B     		ldr	r3, .L7+8
+  68 0020 C3F8E024 		str	r2, [r3, #1248]
+  69              	.L3:
+  12:Src/ex7.c     ****     } else {
+  13:Src/ex7.c     ****         printf("other reset\r\n");
+  14:Src/ex7.c     ****     }
+  15:Src/ex7.c     ****     delay_ms(500);
+  70              		.loc 1 15 5 view .LVU10
+  71 0024 4FF4FA70 		mov	r0, #500
+  72 0028 FFF7FEFF 		bl	delay_ms
+  73              	.LVL3:
+  16:Src/ex7.c     ****     wwdg_init(0x7f, 0x5f, WWDG_PRESCALER_8, WWDG_EWI_DISABLE);
+  74              		.loc 1 16 5 view .LVU11
+  75 002c 0023     		movs	r3, #0
+  76 002e 4FF4C072 		mov	r2, #384
+  77 0032 5F21     		movs	r1, #95
+  78 0034 7F20     		movs	r0, #127
+  79 0036 FFF7FEFF 		bl	wwdg_init
+  80              	.LVL4:
+  17:Src/ex7.c     ****     while(1) {
+  18:Src/ex7.c     ****         delay_ms(32);
+  19:Src/ex7.c     ****         HAL_WWDG_Refresh(&g_wwdg_handle);
+  81              		.loc 1 19 9 is_stmt 0 view .LVU12
+  82 003a 094C     		ldr	r4, .L7+12
+  83              	.L4:
+  17:Src/ex7.c     ****     while(1) {
+  84              		.loc 1 17 5 is_stmt 1 discriminator 1 view .LVU13
+  18:Src/ex7.c     ****         HAL_WWDG_Refresh(&g_wwdg_handle);
+  85              		.loc 1 18 9 discriminator 1 view .LVU14
+  86 003c 2020     		movs	r0, #32
+  87 003e FFF7FEFF 		bl	delay_ms
+  88              	.LVL5:
+ARM GAS  C:\Users\86184\AppData\Local\Temp\ccc6TIaj.s 			page 3
+
+
+  89              		.loc 1 19 9 discriminator 1 view .LVU15
+  90 0042 2046     		mov	r0, r4
+  91 0044 FFF7FEFF 		bl	HAL_WWDG_Refresh
+  92              	.LVL6:
+  17:Src/ex7.c     ****     while(1) {
+  93              		.loc 1 17 10 discriminator 1 view .LVU16
+  94 0048 F8E7     		b	.L4
+  95              	.L2:
+  13:Src/ex7.c     ****     }
+  96              		.loc 1 13 9 view .LVU17
+  97 004a 0648     		ldr	r0, .L7+16
+  98 004c FFF7FEFF 		bl	puts
+  99              	.LVL7:
+ 100 0050 E8E7     		b	.L3
+ 101              	.L8:
+ 102 0052 00BF     		.align	2
+ 103              	.L7:
+ 104 0054 00100240 		.word	1073876992
+ 105 0058 00000000 		.word	.LC0
+ 106 005c 00004242 		.word	1111621632
+ 107 0060 00000000 		.word	g_wwdg_handle
+ 108 0064 0C000000 		.word	.LC1
+ 109              		.cfi_endproc
+ 110              	.LFE68:
+ 112              		.text
+ 113              	.Letext0:
+ 114              		.file 2 "d:\\appdev\\vsarm\\armcc\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 115              		.file 3 "d:\\appdev\\vsarm\\armcc\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 116              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 117              		.file 5 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h"
+ 118              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 119              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_wwdg.h"
+ 120              		.file 8 "Drivers/./BSP/WDG/wdg.h"
+ 121              		.file 9 "Drivers/./SYSTEM/delay/delay.h"
+ 122              		.file 10 "Drivers/./SYSTEM/usart/usart.h"
+ 123              		.file 11 "Drivers/./BSP/LED/led.h"
+ 124              		.file 12 "<built-in>"
+ARM GAS  C:\Users\86184\AppData\Local\Temp\ccc6TIaj.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ex7.c
+C:\Users\86184\AppData\Local\Temp\ccc6TIaj.s:19     .rodata.run.str1.4:00000000 $d
+C:\Users\86184\AppData\Local\Temp\ccc6TIaj.s:26     .text.run:00000000 $t
+C:\Users\86184\AppData\Local\Temp\ccc6TIaj.s:33     .text.run:00000000 run
+C:\Users\86184\AppData\Local\Temp\ccc6TIaj.s:104    .text.run:00000054 $d
+
+UNDEFINED SYMBOLS
+usart_init
+led_init
+puts
+delay_ms
+wwdg_init
+HAL_WWDG_Refresh
+g_wwdg_handle

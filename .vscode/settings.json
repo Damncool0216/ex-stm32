@@ -1,0 +1,16 @@
+{
+	"files.associations": {
+		"sys.h": "c",
+		"led.h": "c",
+		"delay.h": "c",
+		"stm32f1xx_hal.h": "c",
+		"stm32f1xx_hal_uart.h": "c",
+		"main.h": "c",
+		"exti.h": "c",
+		"stm32_hal_legacy.h": "c",
+		"stdio.h": "c",
+		"stm32f1xx.h": "c",
+		"usart.h": "c",
+		"stm32f103xe.h": "c"
+	}
+}
