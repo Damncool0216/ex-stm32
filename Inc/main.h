@@ -32,9 +32,10 @@ extern "C" {
 #include "./SYSTEM/usart/usart.h"
 #include "stm32f1xx_hal.h"
 
-#define __EX 8
+#define __EX 10
 
 #ifdef __EX
+
 #if (__EX == 1) /* 实验1 跑马灯 */
 #include "ex1.h"
 #elif (__EX == 2) /*实验2 蜂鸣器 */
@@ -51,7 +52,12 @@ extern "C" {
 #include "ex7.h"
 #elif (__EX == 8) /*实验8 基本定时器中断实验 */
 #include "ex8.h"
+#elif (__EX == 9) /*实验9 通用定时器中断实验 */
+#include "ex9.h"
+#elif (__EX == 10) /*实验10 通用定时器PWM实验 */
+#include "ex10.h"
 #endif
+
 #endif
 
 #ifdef __cplusplus

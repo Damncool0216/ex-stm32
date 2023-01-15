@@ -2,7 +2,7 @@ C_SOURCES += Drivers/SYSTEM/sys/sys.c \
 Drivers/SYSTEM/delay/delay.c \
 Drivers/SYSTEM/usart/usart.c 
 
-__EX = 8
+__EX = 10
 
 ifeq ($(__EX), 1)
 C_SOURCES += Src/ex1.c \
@@ -51,4 +51,15 @@ ifeq ($(__EX), 8)
 C_SOURCES += Src/ex8.c \
 Drivers/BSP/TIMER/btim.c \
 Drivers/BSP/LED/led.c
+endif
+
+ifeq ($(__EX), 9)
+C_SOURCES += Src/ex9.c \
+Drivers/BSP/TIMER/gtim.c \
+Drivers/BSP/LED/led.c
+endif
+
+ifeq ($(__EX), 10)
+C_SOURCES += Src/ex10.c \
+Drivers/BSP/TIMER/gtim.c 
 endif
